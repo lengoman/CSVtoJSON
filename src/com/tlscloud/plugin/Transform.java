@@ -9,19 +9,17 @@ public class Transform {
 	public static String getJSON(String fileName,String separator){
 		
 		byte[] bytes=null;
+		StringBuilder sb=new StringBuilder("[\n");
 		try {
 			bytes = org.apache.commons.io.FileUtils
 					.readFileToByteArray(new File(fileName));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 		String csv = new String(bytes);
 		String csvValues[] = csv.split("\n");
 		//ArrayList<String> list=new ArrayList<String>(csvValues.length);
 		String header[]=csvValues[0].split(separator);
 		
-		StringBuilder sb=new StringBuilder("[\n");
+		
 		
 		for(int i=1;i<csvValues.length;i++){
 			sb.append("\t").append("{").append("\n");
@@ -41,8 +39,12 @@ public class Transform {
 				sb.append("\t}\n");
 			}
 		}
-		
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		sb.append("]");
+		
 		return sb.toString();
 	}
 	public static void main(String[] args) throws Exception{
