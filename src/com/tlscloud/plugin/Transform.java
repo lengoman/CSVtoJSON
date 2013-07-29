@@ -2,24 +2,39 @@ package com.tlscloud.plugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.net.URL;
+
+import org.apache.commons.io.IOUtils;
 
 public class Transform {
 
-	public static String getJSON(String fileName,String separator){
+	public static String getJSONFromURL(URL url,String separator) throws IOException{
+		
+		String csv=IOUtils.toString(url);
+		return getJSON(csv,separator);
+	}
+	
+	public static String getJSONFromFile(String fileName, String separator)
+			throws IOException {
 		
 		byte[] bytes=null;
-		StringBuilder sb=new StringBuilder("[\n");
-		try {
+		
 			bytes = org.apache.commons.io.FileUtils
 					.readFileToByteArray(new File(fileName));
 		
 		String csv = new String(bytes);
+			return getJSON(csv,separator);
+		
+		
+	}
+	
+	public static String getJSON(String content,String separator){
+		
+		StringBuilder sb=new StringBuilder("[\n");
+		
+		String csv = content;
 		String csvValues[] = csv.split("\n");
-		//ArrayList<String> list=new ArrayList<String>(csvValues.length);
 		String header[]=csvValues[0].split(separator);
-		
-		
 		
 		for(int i=1;i<csvValues.length;i++){
 			sb.append("\t").append("{").append("\n");
@@ -39,15 +54,12 @@ public class Transform {
 				sb.append("\t}\n");
 			}
 		}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 		sb.append("]");
 		
 		return sb.toString();
 	}
 	public static void main(String[] args) throws Exception{
-		System.out.println(getJSON("test/students.csv", "\\,"));
+		System.out.println(getJSONFromFile("test/students.csv", "\\,"));
 	}
 }
